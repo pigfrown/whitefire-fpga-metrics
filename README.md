@@ -4,6 +4,8 @@ Python script to export prometheus metrics for tokenminer and scrape pools.
 
 Metrics can be captured with prometheus and displayed in grafana.
 
+![](example.gif)
+
 ## Installation
 
 Run the installer to add the tokenminer-metrics command to your PATH.
