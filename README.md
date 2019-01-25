@@ -104,6 +104,17 @@ grafana whizz and the exported dashboard seems to have embedded my datasource na
 it. So if you want it to work you will need to call your prometheus datasource
 in grafana "homelab", or change the json to match your datasource name.
 
+About the example dashboard:
+
+It uses "fpga" as the label for the card.. e.g. tokenminer-metrics launched
+with
+`tokenminer-metrics -m logpath.log -c fpga`
+
+Only setup to view 1 card.
+
+The pool stuff won't work unless you run poolscraper as well.
+
+
 # Note on poolscraper.py
 
 Pool scraping still occasionally crashes but I'm putting it here in case people
