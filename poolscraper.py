@@ -68,7 +68,7 @@ class PoolScraper():
 
 if __name__ == "__main__":
     METRICS_PORT = 9090
-    METRICS_INTERVAL = 10
+    METRICS_INTERVAL = 30
 
     #The URL of the pool
     POOL="http://0xbtc.extremehash.io"
