@@ -6,7 +6,7 @@ import time
 
 class PoolScraper():
     """
-    Scraper for 0xBitcoin pools (mike.rs, rosti, hashxchange)
+    Scraper for 0xBitcoin pools (mike.rs, rosti, extremehash )
     Exports the data as prometheus metrics
     """
     POLL_INTERVAL = 30
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     POOL="http://0xbtc.extremehash.io"
     PORT="2095" #This is the same for every pool I've tried
     #The eth address to monitor
-    ETHADDR='0x2D7B4F0F880Ea6e7f7968C1D36E3A8A953d7eb22'
+    ETHADDR="put your eth address here"
 
     start_http_server(METRICS_PORT)
     ps = PoolScraper('{}:{}'.format(POOL, PORT), ETHADDR)

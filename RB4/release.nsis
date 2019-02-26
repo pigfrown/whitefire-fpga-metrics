@@ -1,0 +1,18 @@
+[Application]
+name=RB4 metric exporter
+version=0.1
+# How to launch the app - this calls the 'main' function from the 'myapp' package:
+entry_point=metric_exporter:main
+
+[Python]
+version=3.7.0
+
+[Command rb4-metrics]
+entry_point=metric_exporter:main
+
+
+[Include]
+# Packages from PyPI that your application requires, one per line
+# These must have wheels on PyPI:
+packages = prometheus_client
+
