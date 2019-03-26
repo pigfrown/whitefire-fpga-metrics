@@ -25,7 +25,8 @@ class MinerMetrics():
         
         self.share_good = Gauge('share_good', 'Good shares', ['card',])
         self.share_total = Gauge('share_total', 'Total shares', ['card'])
-        self.share_bad = Gauge('share_bad', 'Bad shares', ['card'])
+        #Using a counter here so we can use "rate" queries without problem
+        self.share_bad = Counter('share_bad', 'Bad shares', ['card'])
         self.share_percent = Gauge('share_percent', '% of bad shares', ['card'])
 
         #We use our own registry to stop prometheus_client exporting extra stats
@@ -64,8 +65,8 @@ class RB4MinerParser():
         self.name = cardname
         self.logging = True
 
-        #keep internal state for errors_calculated metric
-        self.bad_shares =  0
+        #keep internal state for share_bad metric
+        self.share_bad = 0
 
         #Setup logging
         if self.logging:
@@ -103,17 +104,6 @@ class RB4MinerParser():
         for line in lines:
             if is_hashrate(line):
                 last_stats = line
-            #Handle the additional share error messages (on stderr)
-            elif "Submitting a share failed" in line:
-                self.bad_shares += 1
-                if "stale" in line:
-                    reason = "stale"
-                elif "difficulty" in line:
-                    reason = "low_difficulty"
-                else:
-                    self.log.error("Unknown failure reason {}".format(line[52:]))
-                    reason = "unknown"
-                metrics.share_fail_calculated.labels(self.name, reason).inc()
             else:
                 #log everything else at the debug level
                 sline = line.strip()
@@ -135,8 +125,6 @@ class RB4MinerParser():
             metrics.temperature.labels(self.name).set(recent_stats[6][:-1])
             metrics.voltage.labels(self.name).set(recent_stats[7][:-1])
             sol_good, sol_total = recent_stats[9].split('/')
-            calc_errors = round(((int(sol_good) - self.bad_shares)/int(sol_total)), 3) 
-            metrics.errors_calculated.labels(self.name).set(calc_errors)
             metrics.solutions_good.labels(self.name).set(sol_good)
             metrics.solutions_total.labels(self.name).set(sol_total)
             metrics.last_updated.labels(self.name).set(int(datetime.now().timestamp()))
@@ -144,8 +132,11 @@ class RB4MinerParser():
             good_shares, total_shares = recent_stats[-1].split('/')
             bad_shares = int(total_shares) - int(good_shares)
             bad_percent = (int(bad_shares)/int(total_shares))*100
+            #increment bad shares counter for every new bad share since last
+            for _ in range(bad_shares - self.share_bad):
+                metrics.share_bad.labels(self.name).inc()
+            self.share_bad = bad_shares
             metrics.share_good.labels(self.name).set(good_shares)
-            metrics.share_bad.labels(self.name).set(bad_shares)
             metrics.share_total.labels(self.name).set(total_shares)
             metrics.share_percent.labels(self.name).set(bad_percent)
 

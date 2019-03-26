@@ -656,7 +656,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "share_bad{card='fpga'}\n",
+          "expr": "share_bad_total{card='fpga'}\n",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -1113,24 +1113,29 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "share_bad_test_total{card=\"fpga\",instance=\"192.168.23.14:9090\",job=\"fpga\"}",
+          "yaxis": 2
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(share_bad{card='fpga'}[15m])",
+          "expr": "rate(share_bad_total{card='fpga'}[15m])",
           "format": "time_series",
+          "interval": "15s",
           "intervalFactor": 1,
           "legendFormat": "Rate (15m)",
           "refId": "A"
         },
         {
-          "expr": "irate(share_bad{card='fpga'}[15m])",
+          "expr": "",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "Instant Rate",
-          "refId": "B"
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -1695,7 +1700,7 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -1726,5 +1731,5 @@
   "timezone": "",
   "title": "FPGA",
   "uid": "238IpoQiz",
-  "version": 39
+  "version": 41
 }

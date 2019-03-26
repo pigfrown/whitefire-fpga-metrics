@@ -1,6 +1,6 @@
 [Application]
 name=RB4 metric exporter
-version=0.1.1
+version=0.1.2
 # How to launch the app - this calls the 'main' function from the 'myapp' package:
 entry_point=metric_exporter:main
 
