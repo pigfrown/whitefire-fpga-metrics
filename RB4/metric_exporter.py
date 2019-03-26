@@ -20,6 +20,13 @@ class MinerMetrics():
         self.last_updated = Gauge('last_update', 'Last updated', ['card'])
         self.solutions_good = Gauge('solutions_good', 'good solutions', ['card'])
         self.solutions_total = Gauge('solutions_total', 'total solutions', ['card'])
+        self.share_fail_calculated = Gauge('share_fail_calculated', 'Share submission failures', ['card', 'reason'])
+        self.errors_calculated = Gauge('errors_calculated', 'Calculated Error %', ['card'])
+        
+        self.share_good = Gauge('share_good', 'Good shares', ['card',])
+        self.share_total = Gauge('share_total', 'Total shares', ['card'])
+        self.share_bad = Gauge('share_bad', 'Bad shares', ['card'])
+        self.share_percent = Gauge('share_percent', '% of bad shares', ['card'])
 
         #We use our own registry to stop prometheus_client exporting extra stats
         if export_python_metrics:
@@ -34,6 +41,12 @@ class MinerMetrics():
             self.registry.register(self.last_updated)
             self.registry.register(self.solutions_good)
             self.registry.register(self.solutions_total)
+            self.registry.register(self.share_fail_calculated)
+            self.registry.register(self.errors_calculated)
+            self.registry.register(self.share_good)
+            self.registry.register(self.share_bad)
+            self.registry.register(self.share_percent)
+            self.registry.register(self.share_total)
 
     def start_http_server(self, port=9090):
         start_http_server(port, registry=self.registry)
@@ -50,6 +63,9 @@ class RB4MinerParser():
         self.miner = miner_output
         self.name = cardname
         self.logging = True
+
+        #keep internal state for errors_calculated metric
+        self.bad_shares =  0
 
         #Setup logging
         if self.logging:
@@ -87,6 +103,17 @@ class RB4MinerParser():
         for line in lines:
             if is_hashrate(line):
                 last_stats = line
+            #Handle the additional share error messages (on stderr)
+            elif "Submitting a share failed" in line:
+                self.bad_shares += 1
+                if "stale" in line:
+                    reason = "stale"
+                elif "difficulty" in line:
+                    reason = "low_difficulty"
+                else:
+                    self.log.error("Unknown failure reason {}".format(line[52:]))
+                    reason = "unknown"
+                metrics.share_fail_calculated.labels(self.name, reason).inc()
             else:
                 #log everything else at the debug level
                 sline = line.strip()
@@ -108,9 +135,20 @@ class RB4MinerParser():
             metrics.temperature.labels(self.name).set(recent_stats[6][:-1])
             metrics.voltage.labels(self.name).set(recent_stats[7][:-1])
             sol_good, sol_total = recent_stats[9].split('/')
+            calc_errors = round(((int(sol_good) - self.bad_shares)/int(sol_total)), 3) 
+            metrics.errors_calculated.labels(self.name).set(calc_errors)
             metrics.solutions_good.labels(self.name).set(sol_good)
             metrics.solutions_total.labels(self.name).set(sol_total)
             metrics.last_updated.labels(self.name).set(int(datetime.now().timestamp()))
+
+            good_shares, total_shares = recent_stats[-1].split('/')
+            bad_shares = int(total_shares) - int(good_shares)
+            bad_percent = (int(bad_shares)/int(total_shares))*100
+            metrics.share_good.labels(self.name).set(good_shares)
+            metrics.share_bad.labels(self.name).set(bad_shares)
+            metrics.share_total.labels(self.name).set(total_shares)
+            metrics.share_percent.labels(self.name).set(bad_percent)
+
         except IndexError:
             self.logging and self.log.error("Index Error when parsing .. {}".format(recent_stats))
         except ValueError:

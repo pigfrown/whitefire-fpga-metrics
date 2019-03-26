@@ -98,7 +98,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": "14,16,17",
+      "thresholds": "4,5,6",
       "title": "Hashrate@Miner",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -181,7 +181,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": "14,16,17",
+      "thresholds": "4,5,6",
       "timeShift": null,
       "title": "1 hour average @ miner",
       "type": "singlestat",
@@ -214,8 +214,8 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 6,
-        "w": 6,
+        "h": 7,
+        "w": 4,
         "x": 6,
         "y": 1
       },
@@ -294,9 +294,89 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 6,
-        "w": 6,
-        "x": 12,
+        "h": 7,
+        "w": 4,
+        "x": 10,
+        "y": 1
+      },
+      "id": 47,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": true
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "share_percent{card='fpga'}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "0.5,1,5",
+      "title": "Share Errors",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "decimals": 2,
+      "format": "percent",
+      "gauge": {
+        "maxValue": 5,
+        "minValue": 0,
+        "show": true,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 14,
         "y": 1
       },
       "id": 8,
@@ -343,7 +423,7 @@
         }
       ],
       "thresholds": "0.5,1,5",
-      "title": "Errors",
+      "title": "Solution Errors",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -364,7 +444,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "decimals": 2,
+      "decimals": null,
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -375,11 +455,11 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 6,
+        "w": 3,
         "x": 18,
         "y": 1
       },
-      "id": 22,
+      "id": 14,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -411,19 +491,19 @@
         "fillColor": "rgba(31, 118, 189, 0.18)",
         "full": false,
         "lineColor": "rgb(31, 120, 193)",
-        "show": false
+        "show": true
       },
       "tableColumn": "",
       "targets": [
         {
-          "expr": "voltage{card='fpga'}",
+          "expr": "clock_speed{card='fpga'}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
         }
       ],
       "thresholds": "",
-      "title": "Voltage",
+      "title": "Clock Frequency",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -454,8 +534,8 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 3,
-        "w": 3,
+        "h": 4,
+        "w": 2,
         "x": 0,
         "y": 4
       },
@@ -534,94 +614,12 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 3,
+        "h": 2,
+        "w": 2,
+        "x": 2,
         "y": 4
       },
-      "id": 28,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "solutions_total{card='fpga'}\n",
-          "format": "time_series",
-          "interval": "1m",
-          "intervalFactor": 1,
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "thresholds": "14,16,17",
-      "title": "Total Solutions",
-      "type": "singlestat",
-      "valueFontSize": "80%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "decimals": null,
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 6,
-        "x": 18,
-        "y": 4
-      },
-      "id": 14,
+      "id": 48,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -658,14 +656,260 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "clock_speed{card='fpga'}",
+          "expr": "share_bad{card='fpga'}\n",
+          "format": "time_series",
+          "interval": "1m",
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "14,16,17",
+      "title": "Bad Shares",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": true,
+      "colorValue": false,
+      "colors": [
+        "#d44a3a",
+        "#7eb26d",
+        "#299c46"
+      ],
+      "decimals": 0,
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 4,
+        "y": 4
+      },
+      "id": 28,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": true
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "share_total{card='fpga'}\n",
+          "format": "time_series",
+          "interval": "1m",
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "14,16,17",
+      "title": "Total Shares",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "decimals": 2,
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 18,
+        "y": 4
+      },
+      "id": 22,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "voltage{card='fpga'}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
         }
       ],
       "thresholds": "",
-      "title": "Clock Frequency",
+      "title": "Voltage",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": true,
+      "colorValue": false,
+      "colors": [
+        "#d44a3a",
+        "#7eb26d",
+        "#299c46"
+      ],
+      "decimals": 0,
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 2,
+        "y": 6
+      },
+      "id": 49,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": true
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "share_good{card='fpga'}\n",
+          "format": "time_series",
+          "interval": "1m",
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "14,16,17",
+      "title": "Shares Good",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -683,7 +927,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
+        "y": 8
       },
       "id": 18,
       "panels": [],
@@ -734,7 +978,7 @@
         "h": 13,
         "w": 12,
         "x": 0,
-        "y": 8
+        "y": 9
       },
       "id": 4,
       "legend": {
@@ -849,7 +1093,194 @@
         "h": 13,
         "w": 12,
         "x": 12,
-        "y": 8
+        "y": 9
+      },
+      "id": 46,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "rate(share_bad{card='fpga'}[15m])",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "Rate (15m)",
+          "refId": "A"
+        },
+        {
+          "expr": "irate(share_bad{card='fpga'}[15m])",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "Instant Rate",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Share Failure Rate",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 0,
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 22
+      },
+      "id": 38,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "FPGA errors",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "avg_over_time(temperature{card='fpga'}[5m])",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "Temperature",
+          "refId": "A"
+        },
+        {
+          "expr": "avg_over_time(errors{card='fpga'}[5m])",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "FPGA errors",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Temperature and Errors (5 minute average)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "celsius",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 22
       },
       "id": 42,
       "legend": {
@@ -946,12 +1377,12 @@
       "dashes": false,
       "fill": 0,
       "gridPos": {
-        "h": 13,
+        "h": 12,
         "w": 12,
         "x": 0,
-        "y": 21
+        "y": 35
       },
-      "id": 38,
+      "id": 32,
       "legend": {
         "avg": false,
         "current": false,
@@ -969,28 +1400,23 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "FPGA errors",
-          "yaxis": 2
-        }
-      ],
+      "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg_over_time(temperature{card='fpga'}[5m])",
+          "expr": "errors{card='fpga'}",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "Temperature",
+          "legendFormat": "Errors",
           "refId": "A"
         },
         {
-          "expr": "avg_over_time(errors{card='fpga'}[5m])",
+          "expr": "avg_over_time(errors{card='fpga'}[15m])",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "FPGA errors",
+          "legendFormat": "Errors 15m average",
           "refId": "B"
         }
       ],
@@ -998,7 +1424,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Temperature and Errors (5 minute average)",
+      "title": "Errors",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1014,7 +1440,7 @@
       },
       "yaxes": [
         {
-          "format": "celsius",
+          "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -1022,7 +1448,7 @@
           "show": true
         },
         {
-          "format": "percent",
+          "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -1079,7 +1505,7 @@
         "h": 13,
         "w": 12,
         "x": 12,
-        "y": 21
+        "y": 35
       },
       "id": 12,
       "legend": {
@@ -1180,103 +1606,12 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "fill": 0,
-      "gridPos": {
-        "h": 13,
-        "w": 12,
-        "x": 0,
-        "y": 34
-      },
-      "id": 32,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "errors{card='fpga'}",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "Errors",
-          "refId": "A"
-        },
-        {
-          "expr": "avg_over_time(errors{card='fpga'}[15m])",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "Errors 15m average",
-          "refId": "B"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Errors",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "fill": 1,
       "gridPos": {
         "h": 12,
         "w": 12,
         "x": 12,
-        "y": 34
+        "y": 48
       },
       "id": 30,
       "legend": {
@@ -1360,7 +1695,7 @@
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -1391,5 +1726,5 @@
   "timezone": "",
   "title": "FPGA",
   "uid": "238IpoQiz",
-  "version": 35
+  "version": 39
 }
