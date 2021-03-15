@@ -105,5 +105,7 @@ BTC: bc1qwmk00gsj0wmuj4spe59jxq07dspzk4ev8aksc6
 
 ETH: 0x83ae8cAB5f3ddF3a0292408297445f6654bF316A
 
+NIM: NQ85 128L UNKS VY6H UY7G LLA1 70JQ ED37 L52H
+
 If you need help deploying this across many machines/a large farm, or want custom metric monitoring dashboards + alerting created for your farm, get in touch pigfrown@protonmail.com.
 
