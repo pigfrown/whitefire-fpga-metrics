@@ -5,7 +5,7 @@ miners.
 
 Metrics can be captured with prometheus and displayed in grafana.
 
-![](../example.gif)
+![](../0xBitcoin/example.gif)
 
 
 # Supported Bitstreams

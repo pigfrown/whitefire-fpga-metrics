@@ -4,7 +4,7 @@ A set of python scripts to export prometheus metrics from Whitefires FPGA miners
 
 Metrics can be captured with prometheus and displayed in a grafana dashboard, where alerts can be set on temperature, hashrates, or errors.
 
-![](example.gif)
+![](example.png)
 
 # Supported Bitstreams
 
