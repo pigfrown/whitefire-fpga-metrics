@@ -100,7 +100,9 @@ An .exe for metric exporter is included in the releases section (or you can run 
 # Donate/Further Help
 
 If you find this useful and are feeling flush feel free to donate 
+
 BTC: bc1qwmk00gsj0wmuj4spe59jxq07dspzk4ev8aksc6
+
 ETH: 0x83ae8cAB5f3ddF3a0292408297445f6654bF316A
 
 If you need help deploying this across many machines/a large farm, or want custom metric monitoring dashbaords created for your farm, get in touch pigfrown@protonmail.com.
