@@ -20,14 +20,11 @@ class MinerMetrics():
         self.last_updated = Gauge('last_update', 'Last updated', ['card'])
         self.solutions_good = Gauge('solutions_good', 'good solutions', ['card'])
         self.solutions_total = Gauge('solutions_total', 'total solutions', ['card'])
-        self.share_fail_calculated = Gauge('share_fail_calculated', 'Share submission failures', ['card', 'reason'])
-        self.errors_calculated = Gauge('errors_calculated', 'Calculated Error %', ['card'])
         
-        self.share_good = Gauge('share_good', 'Good shares', ['card',])
-        self.share_total = Gauge('share_total', 'Total shares', ['card'])
         #Using a counter here so we can use "rate" queries without problem
         self.share_bad = Counter('share_bad', 'Bad shares', ['card'])
-        self.share_percent = Gauge('share_percent', '% of bad shares', ['card'])
+        self.share_good = Counter('share_good', 'Good shares', ['card',])
+        self.share_total = Counter('share_total', 'Total shares', ['card'])
 
         #We use our own registry to stop prometheus_client exporting extra stats
         if export_python_metrics:
@@ -42,14 +39,11 @@ class MinerMetrics():
             self.registry.register(self.last_updated)
             self.registry.register(self.solutions_good)
             self.registry.register(self.solutions_total)
-            self.registry.register(self.share_fail_calculated)
-            self.registry.register(self.errors_calculated)
             self.registry.register(self.share_good)
             self.registry.register(self.share_bad)
-            self.registry.register(self.share_percent)
             self.registry.register(self.share_total)
 
-    def start_http_server(self, port=9090):
+    def start_http_server(self, port=9092):
         print("STARTING ON {}".format(port))
         start_http_server(port, registry=self.registry)
 
@@ -65,9 +59,6 @@ class NimiqMinerParser():
         self.miner = miner_output
         self.name = cardname
         self.logging = True
-
-        #keep internal state for share_bad metric
-        self.share_bad = 0
 
         #Setup logging
         if self.logging:
@@ -100,9 +91,21 @@ class NimiqMinerParser():
             else:
                 return False
 
+        def update_good_share(line):
+            if "yay" in line:
+                metrics.share_good.labels(self.name).inc()
+                metrics.share_total.labels(self.name).inc()
+
+        def update_bad_share(line):
+            if "booooo" in line:
+                metrics.share_bad.labels(self.name).inc()
+                metrics.share_total.labels(self.name).inc()
+
         #Loop through all lines, logging and getting latest hashrate numbers
         last_stats = None
         for i, line in enumerate(lines):
+            update_good_share(line)
+            update_bad_share(line)
             if is_hashrate(line):
                 last_stats = line
             else:
@@ -111,12 +114,12 @@ class NimiqMinerParser():
                 if sline is not None:
                     self.logging and self.log.debug(sline)
 
+
         if last_stats is None:
             self.logging and self.log.info("No hashrate information")
             return
 
         recent_stats = last_stats.split()
-        print(recent_stats)
 
         #parse the stats
         #TODO: better way to the values from the units.
@@ -130,17 +133,6 @@ class NimiqMinerParser():
             metrics.solutions_good.labels(self.name).set(sol_good)
             metrics.solutions_total.labels(self.name).set(sol_total)
             metrics.last_updated.labels(self.name).set(int(datetime.now().timestamp()))
-
-            good_shares, total_shares = recent_stats[13].split('/')
-            bad_shares = int(total_shares) - int(good_shares)
-            bad_percent = (int(bad_shares)/int(total_shares))*100
-            #increment bad shares counter for every new bad share since last
-            for _ in range(bad_shares - self.share_bad):
-                metrics.share_bad.labels(self.name).inc()
-            self.share_bad = bad_shares
-            metrics.share_good.labels(self.name).set(good_shares)
-            metrics.share_total.labels(self.name).set(total_shares)
-            metrics.share_percent.labels(self.name).set(bad_percent)
 
         except IndexError:
             self.logging and self.log.error("Index Error when parsing .. {}".format(recent_stats))
@@ -183,7 +175,6 @@ class BitstreamLogExporter():
         #Loop forever
         #TODO: close the files? who cares?
         while True:
-            print("LOOPING")
             for parser in parsers:
                 parser.parse_stats(self.metrics)
             time.sleep(self.interval)

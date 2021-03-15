@@ -1,157 +1,107 @@
 # Overview
 
-A set of python scripts to export prometheus metrics from WhiteFires FPGA
-miners.
+A set of python scripts to export prometheus metrics from Whitefires FPGA miners.
 
-Metrics can be captured with prometheus and displayed in grafana.
+Metrics can be captured with prometheus and displayed in a grafana dashboard, where alerts can be set on temperature, hashrates, or errors.
 
 ![](example.gif)
 
-
 # Supported Bitstreams
 
-0xBitcoin, Registered Bitstream 4 (RB4)
+0xBitcoin, Registered Bitstream 4 (RB4), Nimiq Version 2
+
+# Quick Run for Ubuntu 18.04 Nimiq Version 2 Miner 
+
+Assuming 1 card/miner. See "Multiple Cards" for running with multiple cards.
+
+## Setup Environment
+
+Download and install prometheus/grafana and setup python environment
+
+```
+sudo apt-get install git
+git clone https://github.com/pigfrown/whitefire-fpga-metrics
+cd whitefire-fpga-metrics
+./setup.sh
+./setup_python.sh
+```
+
+## Redirect miner output 
+
+When you launch the FPGA miner you need to redirect the output to a file that the metric-exporter can read. E.g if you run your miner with
+
+`
+./FPGAMinerNIM-Linux-v9 -o wss://nimiq.icemining.ca:2053 -u "NQ59NTCV20L7GU6P6U325SMKA0SEJ12N6YFP" -t 400 
+`
+
+you need to change the line to 
+
+`
+./FPGAMinerNIM-Linux-v9 -o wss://nimiq.icemining.ca:2053 -u "NQ59NTCV20L7GU6P6U325SMKA0SEJ12N6YFP" -t 400 -p 1001 > /tmp/nimiqmining.log
+`
+
+The miner will now output nothing but you can view (or `tail -f`) the file /tmp/nimiqmining.log to see the output.
+
+## Launch metric exporter
+
+You can now launch the metric exporter with:
+
+`
+source venv/bin/activate 
+cd Nimiq
+python metric_exporter.py -m /tmp/nimiqmining.log --cardnames fpga  -p 9092
+`
+
+This will launch the metric exporter on port 9092, reading the /tmp/nimiqmining.log logfile, and export the metrics with the "card" label as "fpga". 
+
+## Grafana Configuration
+
+Grafana should be up on port 3000 on your mining box.
+
+Go to localhost:3000 (if on mining box), or $MININGBOXIP:3000 (remotely) to access  grafana, log in with default username "admin", password "admin" and change your password.
+
+### Add Prometheus Datasource to Grafana
+
+* Click "Add data source", select "Prometheus".
+* set URL to "http://localhost:9090".
+* Ensure name is "local_prometheus".
+* Click "Save and Test" and Prometheus should be configured with grafana
+
+### Import Dashboard to Grafana
+
+* On the left hand side of Grafana, click the "+" symbol
+* Select Import Dashboard
+* make sure you select the prometheus data source that was created earlier
+* Click "Upload .json File" and select "grafana-dashboard.json" from the Nimiq directory
 
 # Known issues
 
-If you restart the miner (or it gets restarted by your loop), you will need to restart the metric exporter. Will fix this soon.
+If you restart the miner (or it gets restarted by your loop), you will need to restart the metric exporter. Will fix this soon™
 
-Sometimes the miner output gets "stuck" and no more data is put in log file to export, but the
-miner still running. Only solution right now is to restart miner and exporter.
-Looking into this. Only seems to happen on RB4.
+Sometimes the miner output gets "stuck" and no more data is put in log file to export, but the miner still running. Only solution right now is to restart miner and exporter. Only seems to happen on RB4.
 
-If you are running different bitstreams on the same box (and want to run an
-exporter for each) you will need to change the prometheus port for any extra
-exporters you run (and update your prometheus.yml). You can do this with the
---port option.
+# Multiple Cards
 
+I only have 1 BCU to test this with, but to run with multiple cards/miners you will need to:
 
-## Installation
+* Redirect each miners output to a different file
+* Run metric_exporter.py for each log file, with a different card name and different port
+* Add a new target to /etc/prometheus/prometheus.yml for each metric exporter
+* Add a variable in grafana which lets you select which "card" label you want to display (and edit the example dashboard to use that variable).
 
-Run the installer for the bitstream you want to monitor to add the metric exporters command to your PATH.
-It can now be launched from cmd prompt. For 0xBitcoin use
-tokenminer-metrics, for RB4 use rb4-metrics.
+# Multiple Rigs
 
-Alternatively you can also run the appropriate metric_exporter.py script directly with python
-(if it is already installed on your system).
+If you have multiple rigs you should install prometheus+grafana in one location and setup multiple targets in prometheus.yml pointing to all the exported metrics. You can then view your entire farms metrics in one location and set alerts across the entire farm.
 
-## Running 
+# Windows
 
-Monitoring hashrates requires instances of the miners to have their output redirected to a
-file.
+An .exe for metric exporter is included in the releases section (or you can run with a virtualenv directly with python). You will need to manually install + configure prometheus and grafana on windows, or install it on linux VM/machine elsewhere to handle this.
 
-### Launching the miner
+# Donate/Further Help
 
-In this example the 0xBitcoin miner is used. Replace with the appropriate miner
-for your bitstream.
+If you find this useful and are feeling flush feel free to donate 
+BTC: bc1qwmk00gsj0wmuj4spe59jxq07dspzk4ev8aksc6
+ETH: 0x83ae8cAB5f3ddF3a0292408297445f6654bF316A
 
-If you would normally launch tokenminer with:
-
-`fx-tokenminer-v1.50.exe -t 730 -C -P`
-
-then you now need to launch it with:
-
-`fx-tokenminer-v1.50.exe -t 730 -C -P > hashrates.log`
-
-If you are launching multiple instances of fx-tokenminer for different cards,
-make sure you use different log files to save the output.
-
-You can still input keystrokes into tokenminer, e.g. +/- to change clockspeed,
-or ESC to safely ramp down, but you will not be able to see the output in your
-terminal as normal. If logging is enabled you can see these messages in the
-tokenminer-metric log.
-
-### Launching the metric exporter
-
-Once the miner is started and writing to a file you can launch the metrics
-exporters (tokenminer-metrics, rb4-metrics)
-
-Both programs requires the -m argument, which takes a list of log paths to
-parse.
-
-e.g. for a exporting metrics from one instance of tokenminer:
-
-`tokenminer-metrics -m hashrates.log`
-
-e.g. for exporting metrics for 3 instances of tokenminer
-`tokenminer-metrics -m hashrates1.log hashrates2.log hashrates3.log`
-
-Once the metric exporter is launched you can check it is working by going to
-127.0.0.1:9090 in your web browser on the miner, or by going to $IP:9090 from
-elsewhere in your local network (where $IP is the local IP of your mining box).
-metrics. 
-
-You can check other options with `tokenminer-metrics -h` or `rb4-metrics -h`, notably the -c option
-to tag card stats with custom labels (e.g. bcu1, bcu2, cvp1, etc). By
-default metrics are exported in cardX format. (e.g. card1, card2, card3, etc)
-
-## Prometheus Setup
-
-Install prometheus for your operating system of choice (https://prometheus.io/) and run it/start the service.
-Check prometheus is working correctly at this stage by loading it's web page. It's default port is 9090.
-
-To configure prometheus to scrape your miner you will need it's IP address.
-
-Prometheus is configued with a `prometheus.yml` config file. Locate this file
-on your system (e.g. `/usr/local/etc/prometheus.yml` for FreeBSD). Everytime
-you change this file you need to restart the prometheus service.
-
-E.g. to add a target in `prometheus.yml` for a mining box with IP 192.168.1.1 add
-the following at the bottom of the file. 
-
-```
-    - job_name: "yourjobname"
-      metrics_path: "/"
-      scheme: "http"
-      static_configs:
-            - targets: ['192.168.1.1:9090']
-```
-
-Once you have added this target and restarted prometheus go to the prometheus
-web interface. If the web interface doesn't load you probably have syntax error
-in your `prometheus.yml`.
-
-In the web interface click "Status->Targets" and you should see "yourjobname"
-target. If you are running tokenminer_metrics on the mining box this should show
-as being up.
-
-You can view data in prometheus but grafana is more user friendly.
-
-## Grafana Setup
-
-Install grafana for your operating system of choice (https://grafana.com/) and run it/start the service.
-
-Follow grafana guides to add a new prometheus datasource.
-
-Create a new dashboard or import the dashboard in this repository. Note I'm no
-grafana whizz and the exported dashboard seems to have embedded my datasource name in
-it. So if you want it to work you will need to call your prometheus datasource
-in grafana "homelab", or change the json to match your datasource name.
-
-About the example dashboards:
-
-the dashboard use "fpga" as the label for the card.. e.g. tokenminer-metrics launched
-with
-`tokenminer-metrics -m logpath.log -c fpga`
-
-The example dashboard are only setup to use 1 card, but grafana is extensible
-and easily modified. Grafana 'variables' will help.
-
-The pool stuff won't work unless you run poolscraper as well.
-
-# Note on poolscraper.py
-
-Pool scraper is mostly broken and only works on 0xBitcoin pools.
-
-Pool scraping still occasionally crashes but I'm putting it here in case people
-don't mind it being slightly buggy.
-
-poolscraper.py is not part of tokenminer-metric (yet). This
-means that it exports metrics on a different page than tokenminer-metric (you
-can run it on any box, not just your miner), but you will need to add a new target in `prometheus.yml` for it, and if
-you want to run it on the same box as tokenminer-metrics, change the port from
-9090.
-
-No installer for pool scraper, you'll need to install prometheus-client, python-socketio and
-urllib3 in pip (maybe others)
+If you need help deploying this across many machines/a large farm, or want custom metric monitoring dashbaords created for your farm, get in touch pigfrown@protonmail.com.
 

@@ -1,0 +1,6 @@
+
+  - job_name: whitefirenimiq
+    # If prometheus-node-exporter is installed, grab stats about the local
+    # machine by default.
+    static_configs:
+      - targets: ['localhost:9092']
